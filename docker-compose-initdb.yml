@@ -13,9 +13,7 @@ services:
     networks:
       - formio
   formio:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/cmifr-devops/formio-formio:v4.6.0-rc.3
     container_name: formio
     restart: unless-stopped
     ports:

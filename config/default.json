@@ -9,7 +9,7 @@
   "mongo": "mongodb://localhost:27017/formio-ce",
   "mongoConfig": "",
   "mongoCA": "",
-  "mongoSecret": "--- change me now ---",
+  "mongoSecret": "fitzsecret321",
   "reservedForms": [
     "submission",
     "exists",
@@ -41,7 +41,7 @@
     "tag"
   ],
   "jwt": {
-    "secret": "--- change me now ---",
+    "secret": "fitzsecret321",
     "expireTime": 240
   },
   "email": {
