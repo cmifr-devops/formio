@@ -7,7 +7,7 @@ export function Login() {
                 <a href="index.html" className="logo">
                     <img src="logo-formio-horizontal-lightbg.svg" alt="" />
                 </a>
-                <h1 className="portal-title">Open Source Developer Portal</h1>
+                <h1 className="portal-title">Open Source Developer Portal (CMIFR)</h1>
                 <Form src={"/admin/login"} />
                 <div className="login-help-wrap">
                     <p>

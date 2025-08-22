@@ -1,0 +1,22 @@
+diff --git a/node_modules/@formio/react/lib/components/FormEdit.js b/node_modules/@formio/react/lib/components/FormEdit.js
+index 6254980..c1ff2d0 100644
+--- a/node_modules/@formio/react/lib/components/FormEdit.js
++++ b/node_modules/@formio/react/lib/components/FormEdit.js
+@@ -63,7 +63,7 @@ exports.DEFAULT_SETTINGS_FORM = {
+                             labelPosition: 'left-left',
+                             applyMaskOn: 'change',
+                             tableView: true,
+-                            calculateValue: 'value = _.camelCase(data.title);',
++                            calculateValue: '',//calculateValue: 'value = _.camelCase(data.title);',
+                             validate: {
+                                 required: true,
+                             },
+@@ -80,7 +80,7 @@ exports.DEFAULT_SETTINGS_FORM = {
+                                             label: '<b>Path</b>',
+                                             applyMaskOn: 'change',
+                                             tableView: true,
+-                                            calculateValue: 'value = _.camelCase(data.title).toLowerCase();',
++                                            calculateValue: '',//calculateValue: 'value = _.camelCase(data.title).toLowerCase();',
+                                             validate: {
+                                                 required: true,
+                                             },

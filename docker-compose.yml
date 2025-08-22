@@ -3,29 +3,33 @@ services:
     image: mongo
     container_name: formio-mongo-ce
     restart: unless-stopped
+    ports:
+      - "27017:27017"
     volumes:
-      - "./data/db:/data/db"
+      - "formio_data_db:/data/db"
     environment:
       - MONGO_INITDB_ROOT_USERNAME
       - MONGO_INITDB_ROOT_PASSWORD
     networks:
       - formio-ce
   formio-ce:
-    image: formio/formio:rc
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: formio-ce
-    restart: always
+    restart: unless-stopped
     ports:
       - "3001:3001"
     environment:
       DEBUG: formio:*
-      ROOT_EMAIL: admin@example.com
-      ROOT_PASSWORD: CHANGEME
+      ROOT_EMAIL: admin@cmfitzroy.com.ar
+      ROOT_PASSWORD: fitzsecret321
       NODE_CONFIG: |
         {
           "mongo": "mongodb://mongo-ce:27017/formio-ce",
           "port": 3001,
           "jwt": {
-            "secret": "CHANGEME"
+            "secret": "fitzsecret321"
           }
         }
     networks:
@@ -35,3 +39,6 @@ services:
 networks:
   formio-ce:
     driver: bridge
+    
+volumes:
+  formio_data_db:
