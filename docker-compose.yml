@@ -10,6 +10,7 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME
       - MONGO_INITDB_ROOT_PASSWORD
+    command: ["--replSet", "rs0", "--bind_ip_all"]
     networks:
       - formio
   formio:
@@ -24,6 +25,7 @@ services:
       DEBUG: formio:*
       ROOT_EMAIL: admin@cmfitzroy.com.ar
       ROOT_PASSWORD: fitzsecret321
+      API_KEYS: clave01
       NODE_CONFIG: |
         {
           "mongo": "mongodb://formio-db:27017/formio-ce",
@@ -36,6 +38,29 @@ services:
       - formio
     depends_on:
       - mongo
+  mongo-init:
+    image: mongo:8.0.13
+    depends_on:
+      - mongo
+    networks:
+      - formio
+    entrypoint: >
+      bash -c "
+        echo 'Esperando a Mongo...';
+        until mongosh --host mongo:27017 --eval 'db.adminCommand({ping:1})' >/dev/null 2>&1; do
+          sleep 2;
+        done;
+        echo 'Inicializando ReplicaSet...';
+        mongosh --host mongo:27017 --eval '
+          try {
+            rs.status()
+          } catch(e) {
+            rs.initiate({
+              _id: \"rs0\",
+              members: [{ _id: 0, host: \"mongo:27017\" }]
+            })
+          }'
+      "
 networks:
   formio:
     driver: bridge
