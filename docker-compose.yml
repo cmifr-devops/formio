@@ -28,7 +28,7 @@ services:
       API_KEYS: clave01
       NODE_CONFIG: |
         {
-          "mongo": "mongodb://formio-db:27017/formio-ce",
+          "mongo": "mongodb://formio-db:27017/formio-ce?replicaSet=rs0",
           "port": 3001,
           "jwt": {
             "secret": "fitzsecret321"
@@ -37,7 +37,7 @@ services:
     networks:
       - formio
     depends_on:
-      - mongo
+      - mongo-init
   mongo-init:
     image: mongo:8.0.13
     container_name: mongo-init
