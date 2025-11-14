@@ -53,14 +53,11 @@ router.get("/submissions/:submissionId", async (req, res) => {
     const db = getDB();
     const audit = db.collection("submissions_audit");
 
-    const lastAuditEntry = await audit
+    const auditHistory = await audit
       .find({ documentId: new ObjectId(submissionId) })
-      .sort({ timestamp: -1 })
       .toArray();
 
-    return res.json({
-      lastAuditEntry
-    });
+    return res.json(auditHistory);
 
   } catch (error) {
     console.error(error)
