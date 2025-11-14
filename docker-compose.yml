@@ -45,6 +45,7 @@ services:
       - mongo
     networks:
       - formio
+    restart: "no"
     entrypoint: >
       bash -c "
         echo 'Esperando a Mongo...';
@@ -66,6 +67,8 @@ services:
     container_name: mongo-audit
     build: ./audit
     restart: unless-stopped
+    ports:
+      - "9011:3050"
     environment:
       - MONGO_URI=mongodb://mongo:27017/formio-ce
     depends_on:

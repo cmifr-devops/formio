@@ -7,4 +7,4 @@ RUN npm install --production
 
 COPY . .
 
-CMD ["node", "index.mjs"]
+CMD ["node", "src/index.mjs"]
