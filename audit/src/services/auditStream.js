@@ -1,28 +1,22 @@
-import { MongoClient } from "mongodb";
+import { getDB } from "../db.js";
 
-let mongoClient
+  function setAuditInfo(auditEntry, metadata) {
+    auditEntry.updatedBy = typeof metadata?.auditInfo?.updatedBy !== 'undefined' ?
+      metadata.auditInfo?.updatedBy :
+      'desconocido';
+  }
 
-async function run() {
-  const uri = process.env.MONGO_URI || "mongodb://localhost:27017";
-  mongoClient = new MongoClient(uri);
-  await mongoClient.connect();
-
-  const db = mongoClient.db();
+export function startAuditStream() {
+  const db = getDB();
   const submissions = db.collection("submissions");
   const audit = db.collection("submissions_audit");
 
-const changeStream = submissions.watch();
-
-function setAuditInfo(auditEntry, metadata) {
-  auditEntry.updatedBy = typeof metadata?.auditInfo?.updatedBy !== 'undefined' ? 
-    metadata.auditInfo?.updatedBy :
-    'desconocido';
-}
+  const changeStream = submissions.watch();
 
   console.log("Escuchando cambios en submissions...");
 
   changeStream.on("change", async (change) => {
- 
+
     const auditEntry = {
       documentId: change.documentKey._id,
       timestamp: new Date(),
@@ -33,11 +27,11 @@ function setAuditInfo(auditEntry, metadata) {
       auditEntry.data = change.updateDescription.updatedFields.data;
       setAuditInfo(auditEntry, change.updateDescription.updatedFields.metadata);
       auditEntry.removedFields = change.updateDescription.removedFields;
-    } 
+    }
     else if (change.operationType === "insert") {
       auditEntry.data = change.fullDocument.data;
       setAuditInfo(auditEntry, change.fullDocument.metadata);
-    } 
+    }
     else if (change.operationType === "delete") {
       // formio usa soft deletes, por lo que esta rama nunca se ejecuta
       auditEntry.deletedDocumentId = change.documentKey._id;
@@ -50,12 +44,6 @@ function setAuditInfo(auditEntry, metadata) {
       console.error("Error guardando auditoría:", err);
     }
   });
+
+  return changeStream;
 }
-
-process.on("SIGINT", async () => {
-  await mongoClient.close();
-  console.log("MongoClient cerrado.");
-  process.exit();
-});
-
-run().catch(console.error);
