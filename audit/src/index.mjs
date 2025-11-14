@@ -4,6 +4,7 @@ import { connectDB, closeDB } from './db.js';
 import { loggerMiddleware } from './middleware/logger.js';
 import auditRoutes from './routes/audit.js';
 import { startAuditStream } from './services/auditStream.js';
+import cors from 'cors';
 
 let changeStream
 
@@ -13,6 +14,7 @@ async function run() {
 
   const app = express();
 
+  app.use(cors());
   app.use(express.json());
   app.use(loggerMiddleware);
  
