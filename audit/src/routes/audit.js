@@ -7,6 +7,7 @@ const router = Router();
 router.get("/submissions/:submissionId/summary", async (req, res) => {
   try {
     const { submissionId } = req.params;
+    const includeAnonymous = req.query.includeAnonymous === "true";
 
     if (!ObjectId.isValid(submissionId)) {
       return res.status(400).json({ error: "Invalid submissionId format" });
@@ -15,8 +16,14 @@ router.get("/submissions/:submissionId/summary", async (req, res) => {
     const db = getDB();
     const audit = db.collection("submissions_audit");
 
+    const filter = { documentId: new ObjectId(submissionId) };
+
+    if (!includeAnonymous) {
+      filter.updatedBy = { $ne: null };
+    }
+
     const lastAuditEntry = await audit
-      .find({ documentId: new ObjectId(submissionId) })
+      .find(filter)
       .sort({ timestamp: -1 })
       .limit(1)
       .toArray();

@@ -3,7 +3,7 @@ import { getDB } from "../db.js";
   function setAuditInfo(auditEntry, metadata) {
     auditEntry.updatedBy = typeof metadata?.auditInfo?.updatedBy !== 'undefined' ?
       metadata.auditInfo?.updatedBy :
-      'desconocido';
+      null;
   }
 
 export function startAuditStream() {
